@@ -23,7 +23,7 @@ IND_IMG= pg.image.load(os.path.join('images', 'classic_chess.jpg'))
 Font= pg.font.SysFont('impact', 70)
 Font2= pg.font.SysFont('impact', 32)
 MOVE=mixer.Sound(os.path.join('sound', 'move2.wav'))
-BGM=mixer.music.load(os.path.join('sound', 'BGM.mp3'))
+#BGM=mixer.music.load(os.path.join('sound', 'BGM.mp3'))
 CHECK_SOUND=mixer.Sound(os.path.join('sound', 'checkmate.wav'))
 
 def calc_cell(pix):
@@ -3121,7 +3121,7 @@ def main():
     screen = pg.display.set_mode((1280, 800))
     value=1
     pg.display.set_caption('Chess')
-    mixer.music.play(-1)
+#    mixer.music.play(-1)
 
     index=1
     turn =1
