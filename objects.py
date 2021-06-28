@@ -55,6 +55,28 @@ class King:
         if self.alive:
             self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
 
+    def move(self, board, to):
+        x, y = to[0], to[1]
+        valid_ = False
+        if abs(x - self.pos[0]) == abs(y - self.pos[1]):
+            if abs(x - self.pos[0]) == 1:
+                valid_ = True
+        elif x == self.pos[0]:
+            if abs(y - self.pos[1]) == 1:
+                valid_ = True
+        elif y == self.pos[1]:
+            if abs(x - self.pos[0]) == 1:
+                valid_ = True
+
+        if valid_:
+            if isfree(self, to, board):
+                shift_piece(self, to, board)
+                return True
+            elif isrival(self, to, board) and not isking(to, board):
+                shift_piece(self, to, board)
+                return True
+        return False
+
 class Queen:
     def __init__ (self, img, color, pos):
         self.img = Img(img)
@@ -65,6 +87,20 @@ class Queen:
     def show(self):
         if self.alive:
             self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
+
+    def move(self, board, to):
+        x, y = to[0], to[1]
+        valid_ = (abs(x - self.pos[0]) == abs(y - self.pos[1])) or (x == self.pos[0] or y == self.pos[1])
+        if valid_:
+            if not obstacle(self.pos, to, board):
+                if isfree(self, to, board):
+                    shift_piece(self, to, board)
+                    return True
+                elif isrival(self, to, board) and not isking(to, board):
+                    shift_piece(self, to, board)
+                    return True
+        return False
+
 
 class Bishop:
     def __init__ (self, img, color, pos):
@@ -77,6 +113,20 @@ class Bishop:
         if self.alive:
             self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
 
+    def move(self, board, to):
+        x, y = to[0], to[1]
+        valid_ = abs(x - self.pos[0]) == abs(y - self.pos[1])
+        if valid_:
+            if not obstacle(self.pos, to, board):
+                if isfree(self, to, board):
+                    shift_piece(self, to, board)
+                    return True
+                elif isrival(self, to, board) and not isking(to, board):
+                    shift_piece(self, to, board)
+                    return True
+        return False
+
+
 class Knight:
     def __init__ (self, img, color, pos):
         self.img = Img(img)
@@ -88,6 +138,20 @@ class Knight:
         if self.alive:
             self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
 
+    def move(self, board, to):
+        x, y = to[0], to[1]
+        valid_ = (abs(x - self.pos[0]) == 1 and abs(y - self.pos[1])) == 2 or (abs(x - self.pos[0]) == 2 and abs(y - self.pos[1]) == 1)
+        if valid_:
+            if isfree(self, to, board):
+                shift_piece(self, to, board)
+                return True
+            elif isrival(self, to, board) and not isking(to, board):
+                shift_piece(self, to, board)
+                return True
+        return False
+
+
+
 class Rook:
     def __init__ (self, img, color, pos):
         self.img = Img(img)
@@ -98,6 +162,18 @@ class Rook:
     def show(self):
         if self.alive:
             self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
+
+    def move(self, board, to):
+        if to[0] == self.pos[0] or to[1] == self.pos[1]:
+            if not obstacle(self.pos, to, board):
+                if isfree(self, to, board):
+                    shift_piece(self, to, board)
+                    return True
+                elif isrival(self, to, board) and not isking(to, board):
+                    shift_piece(self, to, board)
+                    return True
+        return False
+        
 
 class Pawn:
     def __init__ (self, img, color, pos):
@@ -118,19 +194,19 @@ class Pawn:
             #pawn vertically forward
             if to[1] == self.pos[1] + self.pawn_dir[self.color]:
                 #pawn one step forward
-                if isfree(self, to, board):
+                if isfree(self, to, board) and not obstacle(self.pos, to, board):
                    shift_piece(self, to, board)
                    self.move_no += 1
                    return True
             elif to[1] == self.pos[1] + 2 * self.pawn_dir[self.color] and self.move_no == 0:
                 #pawn 2 step forward
-                if isfree(self, to, board):
+                if isfree(self, to, board) and not obstacle(self.pos, to, board):
                     shift_piece(self, to, board)
                     self.move_no +=1
                     return True
         else:
             #pawn diagonal cut
-            if to[1] == self.pos[1] + self.pawn_dir[self.color]:
+            if to[1] == self.pos[1] + self.pawn_dir[self.color] and (to[0] == self.pos[0] - 1 or to[0] == self.pos[0] + 1):
                 if isrival(self, to, board) and not isking(to, board):
                     shift_piece(self, to, board)
                     self.move_no += 1
@@ -174,4 +250,48 @@ def isking(to, board):
         return False
     else:
         return True
+
+def obstacle(fr, to, board):
+    diff_x = to[0] - fr[0];
+    diff_y = to[1] - fr[1];
+
+    diag = abs(diff_x) == abs(diff_y)
+    vert = diff_x == 0 or diff_y == 0
+    assert diag or vert
+
+    if diag:
+        for i in range(1, abs(diff_x)):
+            if diff_x < 0 and diff_y < 0:
+                if board.cells[to[0] + i][to[1] + i].piece != '':
+                    return True
+            elif diff_x < 0 and diff_y > 0:
+                if board.cells[to[0] + i][to[1] - i].piece != '':
+                    return True
+            elif diff_x > 0 and diff_y < 0:
+                if board.cells[to[0] - i][to[1] + i].piece != '':
+                    return True
+            elif diff_x > 0 and diff_y > 0:
+                if board.cells[to[0] - i][to[1] - i].piece != '':
+                    return True
+        return False
+    elif vert:
+        if diff_x == 0:
+            for i in range(1, abs(diff_y)):
+                if diff_y < 0:
+                    if board.cells[to[0]][to[1] + i].piece != '':
+                        return True
+                else:
+                    if board.cells[to[0]][to[1] - i].piece != '':
+                        return True
+
+        else:
+            for i in range(1, abs(diff_x)):
+                if diff_x < 0:
+                    if board.cells[to[0] + i][to[1]].piece != '':
+                        return True
+                else:
+                    if board.cells[to[0] - i][to[1]].piece != '':
+                        return True
+        return False
+
 
