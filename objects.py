@@ -71,24 +71,24 @@ class King:
 
         if valid_:
             if isfree(self, to, board):
-                shift_piece(self, to, board)
-                return True
+                if shift_piece(self, to, board):
+                    return True
             elif isrival(self, to, board) and not isking(to, board):
-                shift_piece(self, to, board)
-                return True
+                if shift_piece(self, to, board):
+                    return True
         return False
     
     def in_check(self, board):
         #check vertical attacks
-        if vertical_attack(board):
+        if self.vertical_attack(board):
             return True
 
         #check horizontal attacks
-        elif diagonal_attack(board):
+        elif self.diagonal_attack(board):
             return True
 
         #check horse attacks
-        elif horse_attack(board):
+        elif self.horse_attack(board):
             return True
 
         return False
@@ -99,32 +99,33 @@ class King:
         x, y  = self.pos[0], self.pos[1]
         riv_color = rival_color(self)
 
-        if self.check_horse(x + 1, y + 2, riv_color):
+        if self.check_horse(x + 1, y + 2, riv_color, board):
             return True
-        elif self.check_horse(x + 1, y - 2, riv_color):
+        elif self.check_horse(x + 1, y - 2, riv_color, board):
             return True
-        elif self.check_horse(x - 1, y + 2, riv_color):
+        elif self.check_horse(x - 1, y + 2, riv_color, board):
             return True
-        elif self.check_horse(x - 1, y - 2, riv_color):
+        elif self.check_horse(x - 1, y - 2, riv_color, board):
             return True
-        elif self.check_horse(x + 2, y + 1, riv_color):
+        elif self.check_horse(x + 2, y + 1, riv_color, board):
             return True
-        elif self.check_horse(x + 2, y - 1, riv_color):
+        elif self.check_horse(x + 2, y - 1, riv_color, board):
             return True
-        elif self.check_horse(x - 2, y + 1, riv_color):
+        elif self.check_horse(x - 2, y + 1, riv_color, board):
             return True
-        elif self.check_horse(x - 2, y - 1, riv_color):
+        elif self.check_horse(x - 2, y - 1, riv_color, board):
             return True
 
         return False
 
 
 
-    def check_horse(self, x, y, riv_color):
+    def check_horse(self, x, y, riv_color, board):
         if x >=0 and x < 8 and y >= 0 and y < 8:
             if board.cells[x][y].piece != '':
-                if isrival(self, to, board):
-                    if rival in pieces['knight_' + riv_color]:
+                if isrival(self, (x, y), board):
+                    rival = board.cells[x][y].piece
+                    if rival in pieces['knight_' + riv_color[0]]:
                         return True
         return False
 
@@ -149,12 +150,14 @@ class King:
             y_ = y + add_y * i
             if x_  >= 0 and x_ < 8 and y_ >= 0 and y_ < 8:
                 if board.cells[x_][y_].piece != '':
-                    if isrival(self, to, board):
+                    if isrival(self, (x_, y_), board):
                         rival = board.cells[x_][y_].piece
-                        if i == 1 and rival in pieces['pawn_' + riv_color]:
-                            if pawn_attack(board, rival, riv_color):
+                        if i == 1 and rival in pieces['pawn_' + riv_color[0]]:
+                            if self.pawn_attack(board, rival, riv_color):
                                 return True
-                        elif rival in pieces['queen_' + riv_color] or rival in pieces['bishop_' + riv_color]:
+                        elif i == 1 and rival in pieces['king_' + riv_color[0]]:
+                            return True
+                        elif rival in pieces['queen_' + riv_color[0]] or rival in pieces['bishop_' + riv_color[0]]:
                             return True
                         else:
                             break
@@ -188,11 +191,11 @@ class King:
             y_ = y + add_y * i
             if x_  >= 0 and x_ < 8 and y_ >= 0 and y_ < 8:
                 if board.cells[x_][y_].piece != '':
-                    if isrival(self, to, board):
+                    if isrival(self, (x_, y_), board):
                         rival = board.cells[x_][y_].piece
-                        if i == 1 and rival in pieces['king_' + riv_color]:
+                        if i == 1 and rival in pieces['king_' + riv_color[0]]:
                             return True
-                        elif rival in pieces['queen_' + riv_color] or rival in pieces['rook_' + riv_color]:
+                        elif rival in pieces['queen_' + riv_color[0]] or rival in pieces['rook_' + riv_color[0]]:
                             return True
                         else:
                             break
@@ -218,11 +221,11 @@ class Queen:
         if valid_:
             if not obstacle(self.pos, to, board):
                 if isfree(self, to, board):
-                    shift_piece(self, to, board)
-                    return True
+                    if shift_piece(self, to, board):
+                        return True
                 elif isrival(self, to, board) and not isking(to, board):
-                    shift_piece(self, to, board)
-                    return True
+                    if shift_piece(self, to, board):
+                        return True
         return False
 
 
@@ -243,11 +246,11 @@ class Bishop:
         if valid_:
             if not obstacle(self.pos, to, board):
                 if isfree(self, to, board):
-                    shift_piece(self, to, board)
-                    return True
+                    if shift_piece(self, to, board):
+                        return True
                 elif isrival(self, to, board) and not isking(to, board):
-                    shift_piece(self, to, board)
-                    return True
+                    if shift_piece(self, to, board):
+                        return True
         return False
 
 
@@ -267,11 +270,11 @@ class Knight:
         valid_ = (abs(x - self.pos[0]) == 1 and abs(y - self.pos[1])) == 2 or (abs(x - self.pos[0]) == 2 and abs(y - self.pos[1]) == 1)
         if valid_:
             if isfree(self, to, board):
-                shift_piece(self, to, board)
-                return True
+                if shift_piece(self, to, board):
+                    return True
             elif isrival(self, to, board) and not isking(to, board):
-                shift_piece(self, to, board)
-                return True
+                if shift_piece(self, to, board):
+                    return True
         return False
 
 
@@ -291,11 +294,11 @@ class Rook:
         if to[0] == self.pos[0] or to[1] == self.pos[1]:
             if not obstacle(self.pos, to, board):
                 if isfree(self, to, board):
-                    shift_piece(self, to, board)
-                    return True
+                    if shift_piece(self, to, board):
+                        return True
                 elif isrival(self, to, board) and not isking(to, board):
-                    shift_piece(self, to, board)
-                    return True
+                    if shift_piece(self, to, board):
+                        return True
         return False
         
 
@@ -319,22 +322,22 @@ class Pawn:
             if to[1] == self.pos[1] + self.pawn_dir[self.color]:
                 #pawn one step forward
                 if isfree(self, to, board) and not obstacle(self.pos, to, board):
-                   shift_piece(self, to, board)
-                   self.move_no += 1
-                   return True
+                    if shift_piece(self, to, board):
+                        self.move_no += 1
+                        return True
             elif to[1] == self.pos[1] + 2 * self.pawn_dir[self.color] and self.move_no == 0:
                 #pawn 2 step forward
                 if isfree(self, to, board) and not obstacle(self.pos, to, board):
-                    shift_piece(self, to, board)
-                    self.move_no +=1
-                    return True
+                    if shift_piece(self, to, board):
+                        self.move_no +=1
+                        return True
         else:
             #pawn diagonal cut
             if to[1] == self.pos[1] + self.pawn_dir[self.color] and (to[0] == self.pos[0] - 1 or to[0] == self.pos[0] + 1):
                 if isrival(self, to, board) and not isking(to, board):
-                    shift_piece(self, to, board)
-                    self.move_no += 1
-                    return True
+                    if shift_piece(self, to, board):
+                        self.move_no += 1
+                        return True
         return False
                 
 
@@ -344,8 +347,11 @@ class Pawn:
 def shift_piece(obj, to, board):
     pos_now = obj.pos
     board.cells[pos_now[0]][pos_now[1]].piece = ''
+    obj_to = ''
+    iscutting = False
 
     if isrival(obj, to, board):
+        iscutting = True
         obj_to = board.cells[to[0]][to[1]].piece
         dead.append(obj_to)
         obj_to.alive = False
@@ -354,6 +360,19 @@ def shift_piece(obj, to, board):
 
     board.cells[to[0]][to[1]].piece = obj
     obj.pos = to
+
+    if pieces['king_' + obj.color[0]][0].in_check(board):
+        if iscutting:
+            board.cells[to[0]][to[1]].piece = obj_to
+            dead.pop()
+            obj_to.alive = True
+        else:
+            board.cells[to[0]][to[1]].piece = ''
+        board.cells[pos_now[0]][pos_now[1]].piece = obj
+        obj.pos = pos_now
+        return False
+    else:
+        return True
 
 
 def isrival(obj, to, board):
