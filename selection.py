@@ -7,15 +7,9 @@ class Selection:
         self.active_piece = ''
         self.current_block = (-1, -1)
 
-    def selection_action(self, board):
+    def selection_action(self, board, play):
         if self.is_selected:
             coord = cell_coord()
-#            if board.cells[coord[0]][coord[1]].piece == '':
-#                if move(self.active_piece, coord, board):
-#                    self.is_selected = False
-#            else:
-#                if move(self.active_piece, coord, board):
-#                    self.is_selected 
             if self.same_color_select(board, coord):
                 board.cells[self.current_block[0]][self.current_block[1]].img.change_enhance()
                 self.active_piece = board.cells[coord[0]][coord[1]].piece
@@ -25,9 +19,10 @@ class Selection:
                 if self.active_piece.move(board, coord):
                     self.is_selected = False
                     board.cells[self.current_block[0]][self.current_block[1]].img.change_enhance()
+                    play.change_turn()
         else:
             coord = cell_coord()
-            if board.cells[coord[0]][coord[1]].piece != '':
+            if board.cells[coord[0]][coord[1]].piece != '' and board.cells[coord[0]][coord[1]].piece.color == play.turn:
                 self.is_selected = True
                 self.current_block = coord 
                 self.active_piece = board.cells[coord[0]][coord[1]].piece

@@ -9,3 +9,9 @@ def cell_coord():
 
 def centralize_coordinates(x, y):
     return (x + 10, y + 10)
+
+def rival_color(obj):
+    if obj.color == 'white':
+        return 'black'
+    else:
+        return 'white'

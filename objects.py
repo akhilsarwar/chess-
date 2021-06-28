@@ -3,6 +3,7 @@ import copy
 from screen import *
 from funcs import cell_coord
 from funcs import centralize_coordinates
+from funcs import rival_color
 
 
 dead = []
@@ -50,7 +51,7 @@ class King:
         self.color = color
         self.pos = pos
         self.alive = True
-    
+
     def show(self):
         if self.alive:
             self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
@@ -76,6 +77,129 @@ class King:
                 shift_piece(self, to, board)
                 return True
         return False
+    
+    def in_check(self, board):
+        #check vertical attacks
+        if vertical_attack(board):
+            return True
+
+        #check horizontal attacks
+        elif diagonal_attack(board):
+            return True
+
+        #check horse attacks
+        elif horse_attack(board):
+            return True
+
+        return False
+
+
+
+    def horse_attack(self, board):
+        x, y  = self.pos[0], self.pos[1]
+        riv_color = rival_color(self)
+
+        if self.check_horse(x + 1, y + 2, riv_color):
+            return True
+        elif self.check_horse(x + 1, y - 2, riv_color):
+            return True
+        elif self.check_horse(x - 1, y + 2, riv_color):
+            return True
+        elif self.check_horse(x - 1, y - 2, riv_color):
+            return True
+        elif self.check_horse(x + 2, y + 1, riv_color):
+            return True
+        elif self.check_horse(x + 2, y - 1, riv_color):
+            return True
+        elif self.check_horse(x - 2, y + 1, riv_color):
+            return True
+        elif self.check_horse(x - 2, y - 1, riv_color):
+            return True
+
+        return False
+
+
+
+    def check_horse(self, x, y, riv_color):
+        if x >=0 and x < 8 and y >= 0 and y < 8:
+            if board.cells[x][y].piece != '':
+                if isrival(self, to, board):
+                    if rival in pieces['knight_' + riv_color]:
+                        return True
+        return False
+
+
+    def diagonal_attack(self, board):
+        x, y  = self.pos[0], self.pos[1]
+        riv_color = rival_color(self)
+        if self.check_diagonal(board, x, y, -1, 1, riv_color):
+            return True
+        elif self.check_diagonal(board, x, y, 1, -1, riv_color):
+            return True
+        elif self.check_diagonal(board, x, y, 1, 1, riv_color):
+            return True
+        elif self.check_diagonal(board, x, y, -1, -1, riv_color):
+            return True
+        return False
+
+
+    def check_diagonal(self, board, x, y, add_x, add_y, riv_color):
+        for i in range(1, 8):
+            x_ = x + add_x * i
+            y_ = y + add_y * i
+            if x_  >= 0 and x_ < 8 and y_ >= 0 and y_ < 8:
+                if board.cells[x_][y_].piece != '':
+                    if isrival(self, to, board):
+                        rival = board.cells[x_][y_].piece
+                        if i == 1 and rival in pieces['pawn_' + riv_color]:
+                            if pawn_attack(board, rival, riv_color):
+                                return True
+                        elif rival in pieces['queen_' + riv_color] or rival in pieces['bishop_' + riv_color]:
+                            return True
+                        else:
+                            break
+                    break
+        return False
+
+    def pawn_attack(self, board, rival, riv_color):
+        if rival.pos[1] == self.pos[1] - rival.pawn_dir[riv_color]:
+            return True
+        else:
+            return False
+        
+
+
+    def vertical_attack(self, board):
+        x, y  = self.pos[0], self.pos[1]
+        riv_color = rival_color(self)
+        if self.check_vert(board, x, y, -1, 0, riv_color):
+            return True
+        elif self.check_vert(board, x, y, 1, 0, riv_color):
+            return True
+        elif self.check_vert(board, x, y, 0, -1, riv_color):
+            return True
+        elif self.check_vert(board, x, y, 0, 1, riv_color):
+            return True
+        return False
+
+    def check_vert(self, board, x, y, add_x, add_y, riv_color):
+        for i in range(1, 8):
+            x_ = x + add_x * i
+            y_ = y + add_y * i
+            if x_  >= 0 and x_ < 8 and y_ >= 0 and y_ < 8:
+                if board.cells[x_][y_].piece != '':
+                    if isrival(self, to, board):
+                        rival = board.cells[x_][y_].piece
+                        if i == 1 and rival in pieces['king_' + riv_color]:
+                            return True
+                        elif rival in pieces['queen_' + riv_color] or rival in pieces['rook_' + riv_color]:
+                            return True
+                        else:
+                            break
+                    break
+        return False
+
+
 
 class Queen:
     def __init__ (self, img, color, pos):
