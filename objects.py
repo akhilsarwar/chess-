@@ -53,6 +53,7 @@ class King:
         self.pos = pos
         self.alive = True
         self.move_no = 0
+        self.type = "king"
 
     def show(self):
         if self.alive:
@@ -209,7 +210,7 @@ class King:
         return False
 
     def pawn_attack(self, board, rival, riv_color):
-        if rival.pos[1] == self.pos[1] - rival.pawn_dir[riv_color]:
+        if rival.pos[1] == self.pos[1] - rival.pawn_dir:
             return True
         else:
             return False
@@ -254,6 +255,7 @@ class Queen:
         self.color = color
         self.pos = pos
         self.alive = True
+        self.type = "queen"
 
     def show(self):
         if self.alive:
@@ -279,6 +281,7 @@ class Bishop:
         self.color = color
         self.pos = pos
         self.alive = True
+        self.type = "bishop"
 
     def show(self):
         if self.alive:
@@ -304,6 +307,7 @@ class Knight:
         self.color = color
         self.pos = pos
         self.alive = True
+        self.type = "knight"
 
     def show(self):
         if self.alive:
@@ -330,6 +334,7 @@ class Rook:
         self.pos = pos
         self.alive = True
         self.move_no = 0
+        self.type = "rook"
 
     def show(self):
         if self.alive:
@@ -348,7 +353,7 @@ class Rook:
                         return True
         return False
         
-
+pawn_dir = {"white" : -1, "black": 1}
 class Pawn:
     def __init__ (self, img, color, pos):
         self.img = Img(img)
@@ -356,7 +361,8 @@ class Pawn:
         self.pos = pos
         self.alive = True
         self.move_no = 0
-        self.pawn_dir = {"white": -1, "black" : 1}
+        self.pawn_dir = pawn_dir[self.color]
+        self.type = "pawn"
 
     def show(self):
         if self.alive:
@@ -366,13 +372,13 @@ class Pawn:
         #pawn can move either forward 1 or 2 steps or it can cut diagonally forward if the opposite color is not self.color
         if to[0] == self.pos[0]:
             #pawn vertically forward
-            if to[1] == self.pos[1] + self.pawn_dir[self.color]:
+            if to[1] == self.pos[1] + self.pawn_dir:
                 #pawn one step forward
                 if isfree(self, to, board) and not obstacle(self.pos, to, board):
                     if shift_piece(self, to, board):
                         self.move_no += 1
                         return True
-            elif to[1] == self.pos[1] + 2 * self.pawn_dir[self.color] and self.move_no == 0:
+            elif to[1] == self.pos[1] + 2 * self.pawn_dir and self.move_no == 0:
                 #pawn 2 step forward
                 if isfree(self, to, board) and not obstacle(self.pos, to, board):
                     if shift_piece(self, to, board):
@@ -380,14 +386,35 @@ class Pawn:
                         return True
         else:
             #pawn diagonal cut
-            if to[1] == self.pos[1] + self.pawn_dir[self.color] and (to[0] == self.pos[0] - 1 or to[0] == self.pos[0] + 1):
+            if to[1] == self.pos[1] + self.pawn_dir and (to[0] == self.pos[0] - 1 or to[0] == self.pos[0] + 1):
                 if isrival(self, to, board) and not isking(to, board):
                     if shift_piece(self, to, board):
                         self.move_no += 1
                         return True
-        return False
-                
 
+        #en passant
+        if isfree(self, to, board):
+            if self.pawn_dir == -1:
+                if self.pos[1] == 3 and to[1] == 2 and abs(to[0] - self.pos[0]) == 1:
+                    if self.en_passant(to, board):
+                        return True
+            else:
+                if self.pos[1] == 4 and to[1] == 5 and abs(to[0] - self.pos[0]) == 1:
+                    if self.en_passant(to, board):
+                        return True
+        return False
+                        
+    def en_passant(self, to, board):
+        obj = board.cells[to[0]][self.pos[1]].piece
+        if obj != '' and obj.type == "pawn":
+            if obj.move_no == 1 and board.last_move == obj:
+                if remove_piece((to[0], to[1] - self.pawn_dir), board):
+                    if shift_piece(self, to, board):
+                        return True
+                    else:
+                        replace_back(dead[-1], (to[0], to[1] - self.pawn_dir), board)
+                        return False
+        return False
 
 
 
@@ -435,6 +462,30 @@ def force_shift_piece(obj, to, board):
 
     board.cells[to[0]][to[1]].piece = obj
     obj.pos = to
+
+
+
+# for en_passant
+def remove_piece(pos, board):
+    obj = board.cells[pos[0]][pos[1]].piece
+    dead.append(obj)
+    board.cells[pos[0]][pos[1]].piece = ''
+    obj.alive = False
+
+    self_color = rival_color(obj)
+    if pieces['king_' + self_color[0]][0].in_check(board):
+        board.cells[pos[0]][pos[1]].piece = obj
+        obj.alive = True
+        dead.pop()
+        return False
+    
+    return True
+
+def replace_back(obj, to, board):
+    dead.pop()
+    board.cells[to[0]][to[1]].piece = obj
+    obj.alive = True
+
 
 def isrival(obj, to, board):
     if board.cells[to[0]][to[1]].piece != '':
