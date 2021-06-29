@@ -51,6 +51,7 @@ class King:
         self.color = color
         self.pos = pos
         self.alive = True
+        self.move_no = 0
 
     def show(self):
         if self.alive:
@@ -72,12 +73,49 @@ class King:
         if valid_:
             if isfree(self, to, board):
                 if shift_piece(self, to, board):
+                    self.move_no += 1
                     return True
             elif isrival(self, to, board) and not isking(to, board):
                 if shift_piece(self, to, board):
+                    self.move_no += 1
                     return True
+
+        #castling
+        if self.move_no == 0:
+            #pass
+            if to[1] == self.pos[1]:
+                if to[0] == self.pos[0] - 2:
+                    if self.castle(0, to, board, -1):
+                        return True
+                elif to[0] == self.pos[0] + 2:
+                    if self.castle(7, to, board, 1):
+                        return True
         return False
-    
+
+
+
+    def castle(self, rook_x, to, board, direction):
+        found_rook = False
+        rook = ''
+        for each_rook in pieces['rook_' + self.color[0]]:
+            if each_rook.move_no == 0 and board.cells[rook_x][self.pos[1]].piece == each_rook:
+                found_rook = True
+                rook = each_rook
+                break
+        if found_rook:
+            if not obstacle((rook_x, self.pos[1]), self.pos, board):
+                if shift_piece(self, to, board):
+                    self.move_no += 1
+                    if direction == 1:
+                        force_shift_piece(rook, (self.pos[0] - 1, self.pos[1]), board)
+                    else:
+                        force_shift_piece(rook, (self.pos[0] + 1, self.pos[1]), board)
+                    rook.move_no += 1
+                    return True
+        return False 
+
+
+
     def in_check(self, board):
         #check vertical attacks
         if self.vertical_attack(board):
@@ -285,6 +323,7 @@ class Rook:
         self.color = color
         self.pos = pos
         self.alive = True
+        self.move_no = 0
 
     def show(self):
         if self.alive:
@@ -295,9 +334,11 @@ class Rook:
             if not obstacle(self.pos, to, board):
                 if isfree(self, to, board):
                     if shift_piece(self, to, board):
+                        self.move_no += 1
                         return True
                 elif isrival(self, to, board) and not isking(to, board):
                     if shift_piece(self, to, board):
+                        self.move_no += 1
                         return True
         return False
         
@@ -374,6 +415,17 @@ def shift_piece(obj, to, board):
     else:
         return True
 
+def force_shift_piece(obj, to, board):
+    pos_now = obj.pos
+    board.cells[pos_now[0]][pos_now[1]].piece = ''
+    obj_to = board.cells[to[0]][to[1]].piece
+
+    if obj_to != '':
+        dead.append(obj_to)
+        obj_to.alive = False
+
+    board.cells[to[0]][to[1]].piece = obj
+    obj.pos = to
 
 def isrival(obj, to, board):
     if board.cells[to[0]][to[1]].piece != '':
