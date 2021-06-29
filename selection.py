@@ -1,5 +1,7 @@
 import pygame as pg
 from funcs import cell_coord
+from objects import pieces
+from checkmate import checkmate
 
 class Selection:
     def __init__(self):
@@ -20,6 +22,12 @@ class Selection:
                     self.is_selected = False
                     board.cells[self.current_block[0]][self.current_block[1]].img.change_enhance()
                     play.change_turn()
+                    #checking whether a checkmate is possible at this stage of the game
+                    if check_incheck(play.turn, board):
+                        if checkmate(play.turn, board):
+                            print('CHECKMATE')
+                        else:
+                            print('Move possible')
         else:
             coord = cell_coord()
             if board.cells[coord[0]][coord[1]].piece != '' and board.cells[coord[0]][coord[1]].piece.color == play.turn:
@@ -56,4 +64,11 @@ class Selection:
         if obj != '':
             if obj.color == self.active_piece.color:
                 return True
+        return False
+
+
+def check_incheck(color, board):
+    if pieces['king_' + color[0]][0].in_check(board):
+        return True
+    else:
         return False
