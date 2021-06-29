@@ -11,6 +11,7 @@ pieces  = dict()
 
 class Board:
     cells = []
+    last_move = ''
     def __init__ (self):
         for i in range(8):
             row = []
@@ -102,16 +103,21 @@ class King:
                 found_rook = True
                 rook = each_rook
                 break
+    
         if found_rook:
             if not obstacle((rook_x, self.pos[1]), self.pos, board):
-                if shift_piece(self, to, board):
-                    self.move_no += 1
-                    if direction == 1:
-                        force_shift_piece(rook, (self.pos[0] - 1, self.pos[1]), board)
-                    else:
-                        force_shift_piece(rook, (self.pos[0] + 1, self.pos[1]), board)
-                    rook.move_no += 1
-                    return True
+                king_start_pos = self.pos
+                for i in range(3):
+                    if not shift_piece(self, (king_start_pos[0] + direction * i, king_start_pos[1]), board):
+                        shift_piece(self, king_start_pos, board)
+                        return False
+                self.move_no += 1
+                if direction == 1:
+                    force_shift_piece(rook, (self.pos[0] - 1, self.pos[1]), board)
+                else:
+                    force_shift_piece(rook, (self.pos[0] + 1, self.pos[1]), board)
+                rook.move_no += 1
+                return True
         return False 
 
 
@@ -413,8 +419,11 @@ def shift_piece(obj, to, board):
         obj.pos = pos_now
         return False
     else:
+        board.last_move = obj
+        print(board.last_move)
         return True
 
+#for castling
 def force_shift_piece(obj, to, board):
     pos_now = obj.pos
     board.cells[pos_now[0]][pos_now[1]].piece = ''
