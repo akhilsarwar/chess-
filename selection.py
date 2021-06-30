@@ -18,10 +18,14 @@ class Selection:
                 self.current_block = coord
 
             else:
+                lastmove = board.last_move
                 if self.active_piece.move(board, coord):
+                    print(board.last_move)
                     self.is_selected = False
                     board.cells[self.current_block[0]][self.current_block[1]].img.change_enhance()
                     play.change_turn()
+                    self.alter_lastmove_highlight(lastmove, board)
+                    self.alter_lastmove_highlight(board.last_move, board)
                     #checking whether a checkmate is possible at this stage of the game
                     if check_incheck(play.turn, board):
                         if checkmate(play.turn, board):
@@ -65,6 +69,12 @@ class Selection:
             if obj.color == self.active_piece.color:
                 return True
         return False
+    
+    def alter_lastmove_highlight(self, obj, board):
+        if obj != '':
+            at = obj.pos
+            board.cells[at[0]][at[1]].alter_lastmove_state(board)
+
 
 
 def check_incheck(color, board):

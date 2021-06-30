@@ -40,11 +40,18 @@ class Cell:
         self.pos = pos
         self.piece = ''
 
+
     def show_cell(self):
         self.img.show_img((self.pos[0] * 100, self.pos[1] * 100))
 
     def change_piece(self, new_piece = ''):
         self.piece = new_piece
+
+    def alter_lastmove_state(self, board):
+        if board.last_move != self.piece:
+            self.img.last_move = False
+        else:
+            self.img.last_move = True
 
 class King:
     def __init__ (self, img, color, pos):
@@ -108,9 +115,11 @@ class King:
         if found_rook:
             if not obstacle((rook_x, self.pos[1]), self.pos, board):
                 king_start_pos = self.pos
+                last_move_before_castling = board.last_move
                 for i in range(3):
                     if not shift_piece(self, (king_start_pos[0] + direction * i, king_start_pos[1]), board):
                         shift_piece(self, king_start_pos, board)
+                        board.last_move = last_move_before_castling
                         return False
                 self.move_no += 1
                 if direction == 1:
@@ -448,7 +457,6 @@ def shift_piece(obj, to, board):
         return False
     else:
         board.last_move = obj
-        print(board.last_move)
         return True
 
 #for castling
