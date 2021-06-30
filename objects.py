@@ -410,6 +410,7 @@ class Pawn:
             if obj.move_no == 1 and board.last_move == obj:
                 if remove_piece((to[0], to[1] - self.pawn_dir), board):
                     if shift_piece(self, to, board):
+                        self.move_no += 1
                         return True
                     else:
                         replace_back(dead[-1], (to[0], to[1] - self.pawn_dir), board)
