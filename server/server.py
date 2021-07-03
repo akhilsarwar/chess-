@@ -55,7 +55,24 @@ def get_turn_info():
         return prep_msg('0')
     else:
         return False
-        
+
+
+
+def remove_client(client):
+    sockets.remove(client)
+    client_info = clients.pop(client)
+    print('CLIENT [{0} : {1}] DISCONNECTED!!'.format(client_info.username, client_info.addr))
+
+
+def add_client(client, username_info, addr):
+    sockets.append(client)
+    clients[client] = Client_Details(username_info['msg'], addr)
+    print('CONNECTION ESTABLISHED SUCCESSFULLY, "{0}" IS NOW CONNECTED'.format(clients[client].username))
+
+
+
+
+
 
 def main():
     while True:
@@ -64,33 +81,32 @@ def main():
         
         for current_socket in read_sockets:
             if current_socket == server:
-                
-                client, addr = server.accept()
+                if len(sockets) < 3:
+                    client, addr = server.accept()
 
-                #now server accepts the client username 
-                username_info = recv_msg(client)
-                if username_info:
-                    clients[client] = Client_Details(username_info['msg'], addr)
-                    sockets.append(client)
-                    print('CONNECTION ESTABLISHED SUCCESSFULLY, "{0}" IS NOW CONNECTED'.format(clients[client].username))
+                    #now server accepts the client username 
+                    username_info = recv_msg(client)
+                    if username_info:
+                        add_client(client, username_info, addr)
 
-                    turn_info = get_turn_info()
-                    if turn_info:
-                        snd_msg(client, turn_info)
+                        turn_info = get_turn_info()
+                        if turn_info:
+                            snd_msg(client, turn_info)
 
-                else:
-                    continue
 
             else:
-                msg_info = recv_msg(current_socket)
-                
-                #now sending the recieved message to all clients, (essentially the only client remaining)
-                for socket_ in sockets:
-                    if socket_ != server and socket_ != current_socket:
-                        snd_msg(socket_, msg_info)
+                try:
+                    msg_info = recv_msg(current_socket)
+                    
+                    #now sending the recieved message to all clients, (essentially the only client remaining)
+                    for socket_ in sockets:
+                        if socket_ != server and socket_ != current_socket:
+                            snd_msg(socket_, msg_info)
+                except:
+                    remove_client(current_socket)                    
+
         for socket_ in exception_sockets:
-            sockets.remove(socket_)
-            clients.pop(socket_)
+            remove_client(socket_)
 
 
 
