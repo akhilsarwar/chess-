@@ -1,6 +1,9 @@
 #client side script
 import socket
 import threading
+import main
+from multiplayer_funcs import get_send_info
+from multiplayer_funcs import update_rival_lastmove
 
 
 IP = socket.gethostbyname(socket.gethostname())
@@ -29,30 +32,31 @@ def recv_msg():
     return False
 
 
-def main():
+def setup():
     name = input('username: ').strip()
     snd_msg(name)
 
     turn = recv_msg()
+    game_thread = threading.Thread(target = main.main, args = (int(turn),))
+    game_thread.start()
 
     if int(turn) == 0:
         while True:
             msg_recieved = recv_msg()
-            
-            #process info
+            upate_rival_lastmove(msg_recieved)
             print(msg_recieved)
 
-            msg_tosend = input('write: ')
+            msg_tosend = get_send_info()
             snd_msg(msg_tosend)
     
     else:
         while True:
-            msg_tosend = input('write: ')
+            msg_tosend = get_send_info()
             snd_msg(msg_tosend)
 
             msg_recieved = recv_msg()
-            #process info
+            upate_rival_lastmove(msg_recieved)
             print(msg_recieved)
 
 if __name__ == "__main__":
-    main()
+    setup()

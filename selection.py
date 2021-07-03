@@ -2,6 +2,7 @@ import pygame as pg
 from funcs import cell_coord
 from objects import pieces
 from checkmate import checkmate
+from load_assets import piece_colors
 
 class Selection:
     def __init__(self):
@@ -10,34 +11,41 @@ class Selection:
         self.current_block = (-1, -1)
 
     def selection_action(self, board, play):
-        if self.is_selected:
-            coord = cell_coord()
-            if self.same_color_select(board, coord):
-                board.cells[self.current_block[0]][self.current_block[1]].img.change_enhance()
-                self.active_piece = board.cells[coord[0]][coord[1]].piece
-                self.current_block = coord
+        if play.isturn:
+            if self.is_selected:
+                coord = cell_coord()
 
-            else:
-                lastmove = board.last_move
-                if self.active_piece.move(board, coord):
-                    print(board.last_move)
-                    self.is_selected = False
+                #if the seleceted_block is of the same color as previously selected block
+                if self.same_color_select(board, coord):
                     board.cells[self.current_block[0]][self.current_block[1]].img.change_enhance()
-                    play.change_turn()
-                    self.alter_lastmove_highlight(lastmove, board)
-                    self.alter_lastmove_highlight(board.last_move, board)
-                    #checking whether a checkmate is possible at this stage of the game
-                    if check_incheck(play.turn, board):
-                        if checkmate(play.turn, board):
-                            print('CHECKMATE')
-                        else:
-                            print('Move possible')
-        else:
-            coord = cell_coord()
-            if board.cells[coord[0]][coord[1]].piece != '' and board.cells[coord[0]][coord[1]].piece.color == play.turn:
-                self.is_selected = True
-                self.current_block = coord 
-                self.active_piece = board.cells[coord[0]][coord[1]].piece
+                    self.active_piece = board.cells[coord[0]][coord[1]].piece
+                    self.current_block = coord
+
+                #if the selected_block is a blank or rival color
+                #moves only if it is a valid block
+                else:
+                    lastmove = board.last_move
+                    if self.active_piece.move(board, coord):
+                        print(board.last_move)
+                        self.is_selected = False
+                        board.cells[self.current_block[0]][self.current_block[1]].img.change_enhance()
+                        play.change_turn()
+                        self.alter_lastmove_highlight(lastmove, board)
+                        self.alter_lastmove_highlight(board.last_move, board)
+                        #checking whether a checkmate is possible at this stage of the game
+                        if check_incheck(piece_colors[not (play.player_no)], board):
+                            if checkmate(piece_colors[not (play.player_no)], board):
+                                print('CHECKMATE')
+                            else:
+                                print('Move possible')
+
+            #if no block is currently selected 
+            else:
+                coord = cell_coord()
+                if board.cells[coord[0]][coord[1]].piece != '' and board.cells[coord[0]][coord[1]].piece.color == play.player_color:
+                    self.is_selected = True
+                    self.current_block = coord 
+                    self.active_piece = board.cells[coord[0]][coord[1]].piece
 
     
     def highlight_rect(self, board):

@@ -19,6 +19,8 @@ WHITE_CELL_IMG = pg.transform.smoothscale(pg.image.load(os.path.join('assets/1x'
 BLACK_CELL_IMG = pg.transform.smoothscale(pg.image.load(os.path.join('assets/1x', 'square brown dark_1x_ns.png')), (100, 100)) 
 
 
+piece_colors = {1 : "white", 0: "black"}
+
 class Colors:
     dark_green = (85, 107, 47)
     light_green = (107, 142, 35) 

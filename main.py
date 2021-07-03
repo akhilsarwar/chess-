@@ -7,12 +7,14 @@ from screen import *
 from selection import Selection
 
 pg.init()
+pg.display.set_caption('Chess')
 
 class Play:
-    def __init__(self, board):
-        self.turn = 'white'
+    def __init__(self, board, player_no):
+        self.isturn = player_no 
         self.initialize_pieces(board)
-
+        self.player_color = piece_colors[player_no]
+        self.player_no = player_no
 
     def initialize_pieces(self, board):
         global pieces
@@ -79,10 +81,10 @@ class Play:
             board.cells[i][1].change_piece(pieces['pawn_b'][i])
 
     def change_turn(self):
-        if self.turn == 'white':
-            self.turn = 'black'
+        if self.isturn:
+            self.isturn = False
         else:
-            self.turn = 'white'
+            self.isturn = True
 
     
 
@@ -98,13 +100,20 @@ def debug(board):
             print(j.piece, end = ', ')
         print('\n')
 
-def main():
 
-    pg.display.set_caption('Chess')
+
+board = ''
+play = ''
+select = ''
+
+def main(player_no):
+    
+    global board, play, select
 
     board = Board()
-    play = Play(board)
+    play = Play(board, player_no)
     select = Selection()
+
     debug(board)
 
     start = True
@@ -123,5 +132,5 @@ def main():
         pg.display.update()
            
 if __name__ == "__main__":
-    main()
+    main(1)
 
