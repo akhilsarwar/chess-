@@ -78,9 +78,9 @@ class Selection:
                 return True
         return False
     
-    def alter_lastmove_highlight(self, obj, board):
-        if obj != '':
-            at = obj.pos
+    def alter_lastmove_highlight(self, last_move, board):
+        if last_move:
+            at = last_move['obj'].pos
             board.cells[at[0]][at[1]].alter_lastmove_state(board)
 
 

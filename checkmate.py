@@ -99,7 +99,7 @@ def check_pawn(obj, color, board):
 def check_en_passant(obj, x_, y, board):
     if not isfree(obj, (x_, y), board):
         obj_ = board.cells[x_][y].piece
-        if obj_.type == 'pawn' and board.last_move == obj_ and obj_.move_no == 1:
+        if obj_.type == 'pawn' and board.last_move['obj'] == obj_ and obj_.move_no == 1:
             board.cells[x_][y].piece = ''
             obj_.alive = False
             dead.append(obj_)

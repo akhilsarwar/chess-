@@ -1,26 +1,29 @@
-from transfer_data import Transfer_data
-import json
+import pickle
 import main
 
 def get_send_info():
     i = 0
     while main.play == '':
-        i += 1
         print(i)
+        i += 1
+        continue
     while main.play.isturn:
         continue
-    send_info = {}
-    send_info['object'] = Transfer_data(main.board.last_move, (-1, -1), main.board.last_move.pos)
-    send_info_json = json.dumps(send_info)
-    return send_info_json
+    send_info = {'from' : main.board.last_move['from'], 'to' : main.board.last_move['to']}
+    return send_info
     
     
-def update_rival_lastmove(msg):
-    move_info = json.loads(msg)
-    obj = move_info['object'].obj
-    from_ = move_info['object'].from_
-    to_ = move_info['object'].to_
+def update_rival_lastmove(move_info):
+    from_ = move_info['from']
+    to_ = move_info['to']
+    obj = main.board.cells[from_[0]][from_[1]].piece
+    player_lastmove = main.board.last_move
     obj.move(main.board, to_)
+    print('last self move:  {0}'.format(player_lastmove))
+    main.select.alter_lastmove_highlight(player_lastmove, main.board)
+    print('last rival  move:  {0}'.format(main.board.last_move))
+    main.select.alter_lastmove_highlight(main.board.last_move, main.board)
+    main.play.change_turn()
 
 
     

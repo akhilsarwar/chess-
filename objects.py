@@ -11,7 +11,7 @@ pieces  = dict()
 
 class Board:
     cells = []
-    last_move = ''
+    last_move = {}
     def __init__ (self):
         for i in range(8):
             row = []
@@ -48,7 +48,7 @@ class Cell:
         self.piece = new_piece
 
     def alter_lastmove_state(self, board):
-        if board.last_move != self.piece:
+        if board.last_move['obj'] != self.piece:
             self.img.last_move = False
         else:
             self.img.last_move = True
@@ -416,7 +416,7 @@ class Pawn:
     def en_passant(self, to, board):
         obj = board.cells[to[0]][self.pos[1]].piece
         if obj != '' and obj.type == "pawn":
-            if obj.move_no == 1 and board.last_move == obj:
+            if obj.move_no == 1 and board.last_move['obj'] == obj:
                 if remove_piece((to[0], to[1] - self.pawn_dir), board):
                     if shift_piece(self, to, board):
                         self.move_no += 1
@@ -456,7 +456,7 @@ def shift_piece(obj, to, board):
         obj.pos = pos_now
         return False
     else:
-        board.last_move = obj
+        board.last_move = {'obj' : obj, 'from' :  pos_now, 'to' : to}
         return True
 
 #for castling
