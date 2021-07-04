@@ -1,4 +1,5 @@
 import pygame as pg
+
 def cell_coord():
     x, y  = pg.mouse.get_pos()
     ind_x = x // 100

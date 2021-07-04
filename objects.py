@@ -1,9 +1,7 @@
 from load_assets import *
 import copy
 from screen import *
-from funcs import cell_coord
-from funcs import centralize_coordinates
-from funcs import rival_color
+from utility.funcs import cell_coord, centralize_coordinates, rival_color
 
 
 dead = []

@@ -1,5 +1,5 @@
 import pygame as pg
-from funcs import cell_coord
+from utility.funcs import cell_coord
 from objects import pieces
 from checkmate import checkmate
 from load_assets import piece_colors
