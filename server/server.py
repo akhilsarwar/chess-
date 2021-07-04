@@ -1,5 +1,6 @@
 import socket
 import select
+import pickle 
 
 IP = socket.gethostbyname(socket.gethostname())
 PORT = 5050
@@ -26,7 +27,7 @@ class Client_Details:
 
 def snd_msg(client, msg_info):
     client.send(msg_info['header'].encode(FORMAT))
-    client.send(msg_info['msg'].encode(FORMAT))
+    client.send(pickle.dumps(msg_info['msg']))
 
 
 
@@ -34,7 +35,7 @@ def recv_msg(client):
     header = (client.recv(HEADER)).decode(FORMAT)
     if header:
         msg_len = int(header)
-        msg = (client.recv(msg_len)).decode(FORMAT)
+        msg = pickle.loads(client.recv(msg_len))
         print(msg)
         return {'msg' : msg, 'header' : header}
     return False
