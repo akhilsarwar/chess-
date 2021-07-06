@@ -8,7 +8,7 @@ from objects import pieces
 
 
 IP = socket.gethostbyname(socket.gethostname())
-#IP = '192.168.1.6'
+#IP = '192.168.1.7'
 PORT = 5050
 ADDR = (IP, PORT)
 FORMAT = 'utf-8'
