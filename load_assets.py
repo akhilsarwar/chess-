@@ -25,6 +25,7 @@ class Colors:
     dark_green = (85, 107, 47)
     light_green = (107, 142, 35) 
     silver = (128,128,128)   
+    red = (178, 34, 34)
     def __init():
         pass
 
@@ -34,7 +35,9 @@ class Img:
         self.enhanced_img = self.highlight(copy.copy(image))
         self.enhance = False
         self.last_move = False
+        self.in_check = False
         self.last_move_img = self.get_last_move_img(copy.copy(image))
+        self.check_img = self.get_check_img(copy.copy(image))
 
     def highlight(self, image):
         image.fill(Colors.silver) 
@@ -43,11 +46,12 @@ class Img:
     def show_img(self, pos):
         if(self.enhance):
             screen_.blit(self.enhanced_img, pos)
+        elif self.last_move:
+            screen_.blit(self.last_move_img, pos)
+        elif self.in_check:
+            screen_.blit(self.check_img, pos)
         else:
-            if self.last_move:
-                screen_.blit(self.last_move_img, pos)
-            else:
-                screen_.blit(self.img, pos)
+            screen_.blit(self.img, pos)
 
     def change_enhance(self):
         if self.enhance:
@@ -58,3 +62,7 @@ class Img:
     def get_last_move_img(self, image):
          image.fill(Colors.light_green)   
          return image
+
+    def get_check_img(self, image):
+        image.fill(Colors.red)
+        return image

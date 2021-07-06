@@ -3,6 +3,7 @@ import select
 import pickle 
 
 IP = socket.gethostbyname(socket.gethostname())
+#IP = '103.17.110.77'
 PORT = 5050
 ADDR = (IP, PORT)
 FORMAT = 'utf-8'

@@ -3,9 +3,12 @@ import socket
 import threading
 import pickle
 import main
+from load_assets import piece_colors
+from objects import pieces
 
 
 IP = socket.gethostbyname(socket.gethostname())
+#IP = '192.168.1.6'
 PORT = 5050
 ADDR = (IP, PORT)
 FORMAT = 'utf-8'
@@ -38,7 +41,7 @@ def get_send_info():
         continue
     while main.play.isturn:
         continue
-    send_info = {'from' : main.board.last_move['from'], 'to' : main.board.last_move['to']}
+    send_info = {'from' : main.board.last_move['from'], 'to' : main.board.last_move['to'], 'check' : main.play.check_thrown}
     return send_info
     
     
@@ -52,6 +55,12 @@ def update_move(move_info):
     main.select.alter_lastmove_highlight(player_lastmove, main.board)
     print('last rival  move:  {0}'.format(main.board.last_move))
     main.select.alter_lastmove_highlight(main.board.last_move, main.board)
+    if move_info['check']:
+        main.select.alter_checkstate(main.board, pieces['king_' + main.play.player_color[0]][0].pos, True)
+    else:
+        main.select.alter_checkstate(main.board, pieces['king_' + main.play.player_color[0]][0].pos, False)
+    #TODO : correct here
+    main.select.alter_checkstate(main.board, pieces['king_' + piece_colors[not main.play.player_no][0]][0].prev_pos,  False)
     main.play.change_turn()
 
 

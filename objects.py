@@ -59,12 +59,14 @@ class King:
         self.alive = True
         self.move_no = 0
         self.type = "king"
+        self.prev_pos = pos
 
     def show(self):
         if self.alive:
             self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
 
     def move(self, board, to):
+        king_now = self.pos
         x, y = to[0], to[1]
         valid_ = False
         if abs(x - self.pos[0]) == abs(y - self.pos[1]):
@@ -80,10 +82,12 @@ class King:
         if valid_:
             if isfree(self, to, board):
                 if shift_piece(self, to, board):
+                    self.prev_pos = king_now
                     self.move_no += 1
                     return True
             elif isrival(self, to, board) and not isking(to, board):
                 if shift_piece(self, to, board):
+                    self.prev_pos = king_now
                     self.move_no += 1
                     return True
 
@@ -93,9 +97,11 @@ class King:
             if to[1] == self.pos[1]:
                 if to[0] == self.pos[0] - 2:
                     if self.castle(0, to, board, -1):
+                        self.prev_pos = pos_now
                         return True
                 elif to[0] == self.pos[0] + 2:
                     if self.castle(7, to, board, 1):
+                        self.prev_pos = pos_now
                         return True
         return False
 
