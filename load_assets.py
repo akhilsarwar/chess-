@@ -1,5 +1,5 @@
 import pygame as pg
-from screen import Screen, screen_
+from screen import Screen
 import copy
 import os 
 
@@ -55,7 +55,7 @@ class Img:
         image.fill(Colors.silver) 
         return image
 
-    def show_img(self, pos):
+    def show_img(self, pos, screen_):
         if(self.enhance):
             screen_.blit(self.enhanced_img, pos)
         elif self.last_move:
