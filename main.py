@@ -3,7 +3,7 @@ import pygame as pg
 import math
 from load_assets import *
 from objects import *
-from screen import *
+from screen import Screen
 from selection import Selection
 
 pg.init()
@@ -159,11 +159,11 @@ class Play:
 
     
 
-def show_pieces(board):
+def show_pieces(board, screen):
     for i in range(len(board.cells)):
         for j in range(len(board.cells[0])):
             if board.cells[i][j].piece != '':
-                board.cells[i][j].piece.show()
+                board.cells[i][j].piece.show(screen)
 
 def debug(board):
     for i in board.cells:
@@ -181,6 +181,8 @@ def main(player_no):
     
     global board, play, select
 
+    screen_ = pg.display.set_mode((Screen.screen_width, Screen.screen_height))
+
     board = Board()
     play = Play(board, player_no)
     select = Selection()
@@ -190,8 +192,8 @@ def main(player_no):
     start = True
     while start:
 
-        board.show_board()
-        show_pieces(board)
+        board.show_board(screen_)
+        show_pieces(board,screen_)
         select.highlight_rect(board)
 
         for event in pg.event.get():
