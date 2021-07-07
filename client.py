@@ -48,9 +48,13 @@ def get_send_info():
 def update_move(move_info):
     from_ = move_info['from']
     to_ = move_info['to']
-    obj = main.board.cells[from_[0]][from_[1]].piece
+    obj = main.board.cells[7 - from_[0]][7 - from_[1]].piece
+    print(obj)
+    TO = (7 - to_[0], 7 - to_[1])
+    FROM = (7 - from_[0], 7 - from_[1])
+    print(TO, FROM)
     player_lastmove = main.board.last_move
-    obj.move(main.board, to_)
+    obj.move(main.board, (7 - to_[0], 7 - to_[1]))
     print('last self move:  {0}'.format(player_lastmove))
     main.select.alter_lastmove_highlight(player_lastmove, main.board)
     print('last rival  move:  {0}'.format(main.board.last_move))
@@ -61,6 +65,8 @@ def update_move(move_info):
         main.select.alter_checkstate(main.board, pieces['king_' + main.play.player_color[0]][0].pos, False)
     #TODO : correct here
     main.select.alter_checkstate(main.board, pieces['king_' + piece_colors[not main.play.player_no][0]][0].prev_pos,  False)
+    main.select.alter_checkstate(main.board, pieces['king_' + piece_colors[not main.play.player_no][0]][0].pos,  False)
+
     main.play.change_turn()
 
 
@@ -77,7 +83,6 @@ def setup():
         while True:
             msg_recieved = recv_msg()
             update_move(msg_recieved)
-            print(msg_recieved)
 
             msg_tosend = get_send_info()
             snd_msg(msg_tosend)
@@ -89,7 +94,6 @@ def setup():
 
             msg_recieved = recv_msg()
             update_move(msg_recieved)
-            print(msg_recieved)
 
 if __name__ == "__main__":
     setup()

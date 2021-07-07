@@ -19,6 +19,15 @@ WHITE_CELL_IMG = pg.transform.smoothscale(pg.image.load(os.path.join('assets/1x'
 BLACK_CELL_IMG = pg.transform.smoothscale(pg.image.load(os.path.join('assets/1x', 'square brown dark_1x_ns.png')), (100, 100)) 
 
 
+KING = {'w' : KING_W_IMG, 'b' : KING_B_IMG}
+QUEEN = {'b' : QUEEN_B_IMG, 'w' : QUEEN_W_IMG}
+BISHOP = {'w': BISHOP_W_IMG, 'b' : BISHOP_B_IMG}
+KNIGHT = {'w' : KNIGHT_W_IMG, 'b' : KNIGHT_B_IMG}
+ROOK = {'w' : ROOK_W_IMG, 'b': ROOK_B_IMG}
+PAWN = {'w' : PAWN_W_IMG, 'b' : PAWN_B_IMG}
+CELL = {'w': WHITE_CELL_IMG, 'b': BLACK_CELL_IMG}
+
+
 piece_colors = {1 : "white", 0: "black"}
 
 class Colors:

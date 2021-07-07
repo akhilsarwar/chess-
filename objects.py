@@ -366,15 +366,14 @@ class Rook:
                         return True
         return False
         
-pawn_dir = {"white" : -1, "black": 1}
 class Pawn:
-    def __init__ (self, img, color, pos):
+    def __init__ (self, img, color, pos, pawn_dir):
         self.img = Img(img)
         self.color = color
         self.pos = pos
         self.alive = True
         self.move_no = 0
-        self.pawn_dir = pawn_dir[self.color]
+        self.pawn_dir = pawn_dir
         self.type = "pawn"
 
     def show(self):
@@ -448,7 +447,7 @@ def shift_piece(obj, to, board):
 
     board.cells[to[0]][to[1]].piece = obj
     obj.pos = to
-
+    
     if pieces['king_' + obj.color[0]][0].in_check(board):
         if iscutting:
             board.cells[to[0]][to[1]].piece = obj_to

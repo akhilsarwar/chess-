@@ -34,6 +34,8 @@ class Selection:
                         self.alter_lastmove_highlight(lastmove, board)
                         self.alter_lastmove_highlight(board.last_move, board)
                         self.alter_checkstate(board, pieces['king_' + play.player_color[0]][0].prev_pos, False)
+                        self.alter_checkstate(board, pieces['king_' + play.player_color[0]][0].pos, False)
+
                         #checking whether a checkmate is possible at this stage of the game
                         if check_incheck(piece_colors[not (play.player_no)], board):
                             play.check_thrown = True
