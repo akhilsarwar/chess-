@@ -26,10 +26,10 @@ class Board:
                         row.append(Cell(copy.copy(BLACK_CELL_IMG), 'black', (i, j)))
             self.cells.append(row)
     
-    def show_board(self):
+    def show_board(self, screen_):
         for i in range(8):
             for j in range(8):
-                self.cells[i][j].show_cell()
+                self.cells[i][j].show_cell(screen_)
 
 class Cell:
     def __init__ (self, img, color, pos):
@@ -39,8 +39,8 @@ class Cell:
         self.piece = ''
 
 
-    def show_cell(self):
-        self.img.show_img((self.pos[0] * (Screen.screen_width // 8), self.pos[1] * (Screen.screen_height // 8)))
+    def show_cell(self, screen_):
+        self.img.show_img((self.pos[0] * (Screen.screen_width // 8), self.pos[1] * (Screen.screen_height // 8)), screen_)
 
     def change_piece(self, new_piece = ''):
         self.piece = new_piece
@@ -61,9 +61,9 @@ class King:
         self.type = "king"
         self.prev_pos = pos
 
-    def show(self):
+    def show(self, screen_):
         if self.alive:
-            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
+            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen), screen_)
 
     def move(self, board, to):
         king_now = self.pos
@@ -270,9 +270,9 @@ class Queen:
         self.alive = True
         self.type = "queen"
 
-    def show(self):
+    def show(self, screen_):
         if self.alive:
-            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
+            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen), screen_)
 
     def move(self, board, to):
         x, y = to[0], to[1]
@@ -296,9 +296,9 @@ class Bishop:
         self.alive = True
         self.type = "bishop"
 
-    def show(self):
+    def show(self, screen_):
         if self.alive:
-            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
+            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen), screen_)
 
     def move(self, board, to):
         x, y = to[0], to[1]
@@ -322,9 +322,9 @@ class Knight:
         self.alive = True
         self.type = "knight"
 
-    def show(self):
+    def show(self, screen_):
         if self.alive:
-            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
+            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen),screen_)
 
     def move(self, board, to):
         x, y = to[0], to[1]
@@ -349,9 +349,9 @@ class Rook:
         self.move_no = 0
         self.type = "rook"
 
-    def show(self):
+    def show(self,screen_):
         if self.alive:
-            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
+            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen),screen_)
 
     def move(self, board, to):
         if to[0] == self.pos[0] or to[1] == self.pos[1]:
@@ -376,9 +376,9 @@ class Pawn:
         self.pawn_dir = pawn_dir
         self.type = "pawn"
 
-    def show(self):
+    def show(self, screen_):
         if self.alive:
-                self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
+                self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen),screen_)
 
     def move(self, board, to):
         #pawn can move either forward 1 or 2 steps or it can cut diagonally forward if the opposite color is not self.color
