@@ -3,6 +3,7 @@ from utility.funcs import cell_coord
 from objects import pieces
 from checkmate import checkmate
 from load_assets import piece_colors
+from screen import Screen
 
 class Selection:
     def __init__(self):
@@ -13,7 +14,7 @@ class Selection:
     def selection_action(self, board, play):
         if play.isturn:
             if self.is_selected:
-                coord = cell_coord()
+                coord = cell_coord(Screen)
 
                 #if the seleceted_block is of the same color as previously selected block
                 if self.same_color_select(board, coord):
@@ -53,7 +54,7 @@ class Selection:
 
             #if no block is currently selected 
             else:
-                coord = cell_coord()
+                coord = cell_coord(Screen)
                 if board.cells[coord[0]][coord[1]].piece != '' and board.cells[coord[0]][coord[1]].piece.color == play.player_color:
                     self.is_selected = True
                     self.current_block = coord 
@@ -65,7 +66,7 @@ class Selection:
         if self.is_selected:
             board.cells[self.current_block[0]][self.current_block[1]].img.enhance = True
         else:
-            coord = cell_coord()
+            coord = cell_coord(Screen)
             if(self.current_block == (-1, -1)):
                 try:
                     board.cells[coord[0]][coord[1]].img.enhance = True

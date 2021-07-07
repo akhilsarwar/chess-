@@ -1,7 +1,7 @@
 from load_assets import *
 import copy
-from screen import *
-from utility.funcs import cell_coord, centralize_coordinates, rival_color
+from screen import Screen
+from utility.funcs import centralize_coordinates, rival_color
 
 
 dead = []
@@ -40,7 +40,7 @@ class Cell:
 
 
     def show_cell(self):
-        self.img.show_img((self.pos[0] * 100, self.pos[1] * 100))
+        self.img.show_img((self.pos[0] * (Screen.screen_width // 8), self.pos[1] * (Screen.screen_height // 8)))
 
     def change_piece(self, new_piece = ''):
         self.piece = new_piece
@@ -63,7 +63,7 @@ class King:
 
     def show(self):
         if self.alive:
-            self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
+            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
 
     def move(self, board, to):
         king_now = self.pos
@@ -272,7 +272,7 @@ class Queen:
 
     def show(self):
         if self.alive:
-            self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
+            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
 
     def move(self, board, to):
         x, y = to[0], to[1]
@@ -298,7 +298,7 @@ class Bishop:
 
     def show(self):
         if self.alive:
-            self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
+            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
 
     def move(self, board, to):
         x, y = to[0], to[1]
@@ -324,7 +324,7 @@ class Knight:
 
     def show(self):
         if self.alive:
-            self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
+            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
 
     def move(self, board, to):
         x, y = to[0], to[1]
@@ -351,7 +351,7 @@ class Rook:
 
     def show(self):
         if self.alive:
-            self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
+            self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
 
     def move(self, board, to):
         if to[0] == self.pos[0] or to[1] == self.pos[1]:
@@ -378,7 +378,7 @@ class Pawn:
 
     def show(self):
         if self.alive:
-                self.img.show_img(centralize_coordinates(self.pos[0]*100, self.pos[1]* 100))
+                self.img.show_img(centralize_coordinates(self.pos[0]*Screen.cell_dim, self.pos[1]* Screen.cell_dim, Screen))
 
     def move(self, board, to):
         #pawn can move either forward 1 or 2 steps or it can cut diagonally forward if the opposite color is not self.color
