@@ -78,6 +78,7 @@ def setup():
     turn = recv_msg()
     game_thread = threading.Thread(target = main.main, args = (int(turn),))
     game_thread.start()
+    
 
     if int(turn) == 0:
         while True:

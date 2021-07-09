@@ -6,8 +6,6 @@ from objects import *
 from screen import Screen
 from selection import Selection
 
-pg.init()
-pg.display.set_caption('Chess')
 
 class Play:
     def __init__(self, board, player_no):
@@ -181,7 +179,10 @@ def main(player_no):
     
     global board, play, select
 
-    screen_ = pg.display.set_mode((Screen.screen_width, Screen.screen_height))
+    pg.init()
+    pg.display.set_caption('Chess')
+    print('shdbsjhb')
+    screen_ = pg.display.set_mode((600, 600))
 
     board = Board()
     play = Play(board, player_no)

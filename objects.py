@@ -97,11 +97,11 @@ class King:
             if to[1] == self.pos[1]:
                 if to[0] == self.pos[0] - 2:
                     if self.castle(0, to, board, -1):
-                        self.prev_pos = pos_now
+                        self.prev_pos = king_now
                         return True
                 elif to[0] == self.pos[0] + 2:
                     if self.castle(7, to, board, 1):
-                        self.prev_pos = pos_now
+                        self.prev_pos = king_now
                         return True
         return False
 
@@ -126,6 +126,8 @@ class King:
                         board.last_move = last_move_before_castling
                         return False
                 self.move_no += 1
+                self.prev_pos = king_start_pos
+                board.last_move = {'obj' : self, 'from' : self.prev_pos, 'to' : self.pos}
                 if direction == 1:
                     force_shift_piece(rook, (self.pos[0] - 1, self.pos[1]), board)
                 else:
