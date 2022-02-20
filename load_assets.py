@@ -34,6 +34,7 @@ CELL = {'w': WHITE_CELL_IMG, 'b': BLACK_CELL_IMG}
 piece_colors = {1 : "white", 0: "black"}
 
 class Colors:
+    violet = (148, 0, 211)
     dark_green = (85, 107, 47)
     light_green = (107, 142, 35) 
     silver = (128,128,128)   
@@ -48,8 +49,10 @@ class Img:
         self.enhance = False
         self.last_move = False
         self.in_check = False
+        self.in_checkmate = False
         self.last_move_img = self.get_last_move_img(copy.copy(image))
         self.check_img = self.get_check_img(copy.copy(image))
+        self.checkmate_img = self.get_checkmate_img(copy.copy(image))
 
     def highlight(self, image):
         image.fill(Colors.silver) 
@@ -60,6 +63,8 @@ class Img:
             screen_.blit(self.enhanced_img, pos)
         elif self.last_move:
             screen_.blit(self.last_move_img, pos)
+        elif self.in_checkmate:
+            screen_.blit(self.checkmate_img, pos)
         elif self.in_check:
             screen_.blit(self.check_img, pos)
         else:
@@ -77,4 +82,8 @@ class Img:
 
     def get_check_img(self, image):
         image.fill(Colors.red)
+        return image
+
+    def get_checkmate_img(self, image):
+        image.fill(Colors.violet)
         return image

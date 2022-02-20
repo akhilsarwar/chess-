@@ -43,6 +43,8 @@ class Selection:
                             self.alter_checkstate(board, pieces['king_' + piece_colors[not play.player_no][0]][0].pos, True)
 
                             if checkmate(piece_colors[not (play.player_no)], board):
+                                self.make_checkmate(board, pieces['king_' + piece_colors[not play.player_no][0]][0].pos)
+                                play.checkmate = True
                                 print('CHECKMATE')
                             else:
                                 print('Move possible')
@@ -102,6 +104,8 @@ class Selection:
         else:
             board.cells[pos[0]][pos[1]].img.in_check = False
 
+    def make_checkmate(self, board, pos):
+        board.cells[pos[0]][pos[1]].img.in_checkmate = True
 
 
 
@@ -110,3 +114,5 @@ def check_incheck(color, board):
         return True
     else:
         return False
+
+

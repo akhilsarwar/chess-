@@ -41,7 +41,7 @@ def get_send_info():
         continue
     while main.play.isturn:
         continue
-    send_info = {'from' : main.board.last_move['from'], 'to' : main.board.last_move['to'], 'check' : main.play.check_thrown}
+    send_info = {'from' : main.board.last_move['from'], 'to' : main.board.last_move['to'], 'check' : main.play.check_thrown, 'checkmate': main.play.checkmate}
     return send_info
     
     
@@ -61,6 +61,8 @@ def update_move(move_info):
     main.select.alter_lastmove_highlight(main.board.last_move, main.board)
     if move_info['check']:
         main.select.alter_checkstate(main.board, pieces['king_' + main.play.player_color[0]][0].pos, True)
+        if move_info['checkmate']:
+            main.select.make_checkmate(main.board, pieces['king_' + main.play.player_color[0]][0].pos)
     else:
         main.select.alter_checkstate(main.board, pieces['king_' + main.play.player_color[0]][0].pos, False)
     #TODO : correct here

@@ -13,6 +13,7 @@ class Play:
         self.player_color = piece_colors[player_no]
         self.player_no = player_no
         self.check_thrown = False
+        self.checkmate = False
         self.initialize_pieces(board)
 
     def initialize_pieces(self, board):
